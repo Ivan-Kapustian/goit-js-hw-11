@@ -58,16 +58,19 @@ function handleIntersect(evt) {
 
 async function searchMorePhotos() {
   try {
-    const { data } = await pixabayAPI.fetchPhotos();
+    const nextPage = currentPage + 1;
+    const { data } = await pixabayAPI.fetchPhotos(nextPage);
     gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
-    currentPage++;
-    if (currentPage >= data.totalHits) {
+
+    if (nextPage * 40 >= data.totalHits) {
       observer.unobserve(target);
       Notify.failure(
         "We're sorry, but you've reached the end of search results."
       );
       return;
     }
+
+    currentPage = nextPage;
     simplelightbox.refresh();
   } catch (error) {}
 }
