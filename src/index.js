@@ -18,7 +18,7 @@ const options = {
 
 const observer = new IntersectionObserver(handleIntersect, options);
 searchForm.addEventListener('submit', handlerSearchForm);
-
+let currentPage = 1;
 function handlerSearchForm(evt) {
   evt.preventDefault();
   target.hidden = true;
@@ -26,6 +26,7 @@ function handlerSearchForm(evt) {
   const searchQuery = evt.currentTarget.elements['searchQuery'].value.trim();
   pixabayAPI.q = searchQuery;
   pixabayAPI.page = 1;
+  currentPage = 1;
   searchPhotos();
 }
 
@@ -57,10 +58,10 @@ function handleIntersect(evt) {
 
 async function searchMorePhotos() {
   try {
-    const result = pixabayAPI.page * 40;
-    const { data } = await pixabayAPI.fetchPhotos();
+    const { data } = await pixabayAPI.fetchPhotos(currentPage);
     gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
-    if (result >= data.totalHits) {
+    currentPage++;
+    if (currentPage >= data.totalHits) {
       observer.unobserve(target);
       Notify.failure(
         "We're sorry, but you've reached the end of search results."
