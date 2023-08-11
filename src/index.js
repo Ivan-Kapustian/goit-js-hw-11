@@ -32,7 +32,7 @@ function handlerSearchForm(evt) {
 
 async function searchPhotos() {
   try {
-    const { data } = await pixabayAPI.fetchPhotos();
+    const { data } = await pixabayAPI.fetchPhotos(currentPage);
     if (data.hits.length < 1) {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -58,7 +58,7 @@ function handleIntersect(evt) {
 
 async function searchMorePhotos() {
   try {
-    const { data } = await pixabayAPI.fetchPhotos(currentPage);
+    const { data } = await pixabayAPI.fetchPhotos();
     gallery.insertAdjacentHTML('beforeend', createMarkup(data.hits));
     currentPage++;
     if (currentPage >= data.totalHits) {
